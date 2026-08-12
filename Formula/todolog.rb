@@ -6,9 +6,10 @@ class Todolog < Formula
   license "MIT"
 
   bottle do
-    root_url "https://raw.githubusercontent.com/palozano/homebrew-tap/9f5ba83/bottles"
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe: "f705064d709535dde9896c7f7765f31c0109fd2bac4af7b4cc6874b014749b79"
+    root_url "https://raw.githubusercontent.com/palozano/homebrew-tap/main/bottles"
+    rebuild 2
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "946124d5a11beaeada502b1c4781f21f51e3651895b722b4408ead3d22304551"
+    sha256 cellar: :any,                 x86_64_linux: "d4f6d5cddf0a93cde78928b688203a6f9a9e615e7e6dca83cec69eb597f84925"
   end
 
   depends_on "rust" => :build
