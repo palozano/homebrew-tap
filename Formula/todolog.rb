@@ -7,9 +7,10 @@ class Todolog < Formula
 
   bottle do
     root_url "https://raw.githubusercontent.com/palozano/homebrew-tap/main/bottles"
-    rebuild 2
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "946124d5a11beaeada502b1c4781f21f51e3651895b722b4408ead3d22304551"
-    sha256 cellar: :any,                 x86_64_linux: "d4f6d5cddf0a93cde78928b688203a6f9a9e615e7e6dca83cec69eb597f84925"
+    rebuild 3
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "e8191c0b4d68d2d55382a82a37898fc1b6717cd701feaffb78a465032c692583"
+    sha256 cellar: :any,                 arm64_linux:  "97742951fc22fff0ea2d4916045024904f2879af5627dd18cf90037f6f65d59e"
+    sha256 cellar: :any,                 x86_64_linux: "1726c1d35b7fbe360bb7e1f2542f454d8fed032974fb742c7b0a402a3d0b34c9"
   end
 
   depends_on "rust" => :build
