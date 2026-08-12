@@ -2,15 +2,45 @@
 
 ## How do I install these formulae?
 
-`brew install palozano/tap/<formula>`
+Install `todolog` directly:
 
-Or `brew tap palozano/tap` and then `brew install <formula>`.
+```sh
+brew install palozano/tap/todolog
+```
 
-Or, in a `brew bundle` `Brewfile`:
+Or tap the repository first:
+
+```sh
+brew tap palozano/tap
+brew install todolog
+```
+
+In a `brew bundle` `Brewfile`:
 
 ```ruby
 tap "palozano/tap"
-brew "<formula>"
+brew "todolog"
+```
+
+## Maintaining todolog
+
+Update `Formula/todolog.rb` for a new release by changing the tag URL and
+`sha256`, then verify it locally:
+
+```sh
+brew install --build-from-source --verbose palozano/tap/todolog
+brew test palozano/tap/todolog
+brew audit --new --formula palozano/tap/todolog
+```
+
+The tap includes the Homebrew `brew test-bot` workflow. To build bottles, open a
+pull request against this tap, wait for the bottle artifacts, then run the
+`brew pr-pull` workflow for that pull request.
+
+For a local bottle pull:
+
+```sh
+brew pr-pull --tap=palozano/tap <pull-request-number>
 ```
 
 ## Documentation
