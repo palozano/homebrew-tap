@@ -1,0 +1,54 @@
+name: brew bottles
+
+on:
+  workflow_dispatch:
+    inputs:
+      formula:
+        description: Formula to bottle
+        required: true
+        default: todolog
+
+jobs:
+  bottle:
+    strategy:
+      matrix:
+        os: [macos-26]
+        include:
+          - os: ubuntu-latest
+            container:
+              image: ghcr.io/homebrew/brew:main
+              options: --privileged
+    runs-on: ${{ matrix.os }}
+    container: ${{ fromJSON(toJSON(matrix.container)) }} # zizmor: ignore[unpinned-images]
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@df4b09108a1de9d6f995fe68f302b3f68bd6d2ef # 2026.07.20.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache Homebrew Bundler RubyGems
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: ${{ matrix.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ matrix.os }}-rubygems-
+
+      - name: Build bottle
+        run: |
+          tap="${GITHUB_REPOSITORY/\/homebrew-/\/}"
+          formula="${{ inputs.formula }}"
+          ref="$tap/$formula"
+          version="$(brew info --json=v2 "$ref" | ruby -rjson -e 'puts JSON.parse(STDIN.read)["formulae"][0]["versions"]["stable"]')"
+
+          brew install --build-bottle "$ref"
+          brew bottle --json --root-url="https://github.com/$GITHUB_REPOSITORY/releases/download/$formula-$version" "$ref"
+
+      - name: Upload bottle artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: bottles_${{ matrix.os }}
+          path: "*.bottle.*"
