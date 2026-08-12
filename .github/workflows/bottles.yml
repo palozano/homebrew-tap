@@ -12,14 +12,8 @@ jobs:
   bottle:
     strategy:
       matrix:
-        os: [macos-26]
-        include:
-          - os: ubuntu-latest
-            container:
-              image: ghcr.io/homebrew/brew:main
-              options: --privileged
+        os: [macos-26, ubuntu-latest]
     runs-on: ${{ matrix.os }}
-    container: ${{ fromJSON(toJSON(matrix.container)) }} # zizmor: ignore[unpinned-images]
     permissions:
       actions: read
       contents: read
@@ -39,9 +33,10 @@ jobs:
 
       - name: Build bottle
         run: |
-          tap="${GITHUB_REPOSITORY/\/homebrew-/\/}"
+          tap="$(printf '%s\n' "$GITHUB_REPOSITORY" | sed 's#/homebrew-#/#')"
           formula="${{ inputs.formula }}"
           ref="$tap/$formula"
+          brew tap "$tap" "https://github.com/$GITHUB_REPOSITORY"
           version="$(brew info --json=v2 "$ref" | ruby -rjson -e 'puts JSON.parse(STDIN.read)["formulae"][0]["versions"]["stable"]')"
 
           brew install --build-bottle "$ref"
